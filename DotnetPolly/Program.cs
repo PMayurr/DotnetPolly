@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.RateLimiting;
+﻿using DotnetPolly.Services;
+using Microsoft.AspNetCore.RateLimiting;
 using System.Globalization;
 using System.Threading.RateLimiting;
 
@@ -50,6 +51,12 @@ builder.Services.AddRateLimiter(_ =>
 });
 
 // Add services to the container.
+builder.Services.AddTransient<ExternalApiService, ExternalApiService>();
+builder.Services.AddHttpClient<ExternalApiService>(httpClient =>
+{
+    httpClient.BaseAddress = new Uri("https://localhost:7178/");
+});
+
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
