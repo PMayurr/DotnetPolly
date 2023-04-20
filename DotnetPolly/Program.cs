@@ -32,22 +32,10 @@ builder.Services.AddRateLimiter(_ =>
                 {
                     AutoReplenishment = true,
                     PermitLimit = 4,
-                    Window = TimeSpan.FromSeconds(2)
+                    Window = TimeSpan.FromSeconds(20)
                 });
-        }),
-        PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
-        {
-            var userAgent = httpContext.Request.Headers.UserAgent.ToString();
-
-            return RateLimitPartition.GetFixedWindowLimiter
-            (userAgent, _ =>
-                new FixedWindowRateLimiterOptions
-                {
-                    AutoReplenishment = true,
-                    PermitLimit = 20,
-                    Window = TimeSpan.FromSeconds(30)
-                });
-        }));
+        })
+    );
 });
 
 // Add services to the container.
