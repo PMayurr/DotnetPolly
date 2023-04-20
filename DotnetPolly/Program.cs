@@ -54,7 +54,8 @@ var rateLimtiPolicy = Policy.RateLimit(4, TimeSpan.FromSeconds(20), (retryAfter,
 builder.Services.AddHttpClient<ExternalApiService>(httpClient =>
 {
     httpClient.BaseAddress = new Uri("https://localhost:7178/");
-}).AddTransientHttpErrorPolicy(policy => policy.);
+});
+    //.AddTransientHttpErrorPolicy(policy => policy.);
 
 
 builder.Services.AddControllers();
