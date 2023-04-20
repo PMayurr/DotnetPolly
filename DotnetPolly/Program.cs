@@ -2,6 +2,9 @@
 using Microsoft.AspNetCore.RateLimiting;
 using System.Globalization;
 using System.Threading.RateLimiting;
+using Polly;
+using Polly.Extensions.Http;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,10 +43,18 @@ builder.Services.AddRateLimiter(_ =>
 
 // Add services to the container.
 builder.Services.AddTransient<ExternalApiService, ExternalApiService>();
+
+// Allow up to 20 executions per second, with a delegate to return the
+// retry-after value to use if the rate limit is exceeded.
+var rateLimtiPolicy = Policy.RateLimit(4, TimeSpan.FromSeconds(20), (retryAfter, context) =>
+{
+    return retryAfter.Add(TimeSpan.FromSeconds(21));
+});
+
 builder.Services.AddHttpClient<ExternalApiService>(httpClient =>
 {
     httpClient.BaseAddress = new Uri("https://localhost:7178/");
-});
+}).AddTransientHttpErrorPolicy(policy => policy.);
 
 
 builder.Services.AddControllers();
