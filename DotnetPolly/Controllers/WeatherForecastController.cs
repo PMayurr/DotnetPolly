@@ -38,7 +38,8 @@ public class WeatherForecastController : ControllerBase
     [Route("GetApiResult")]
     public async Task<IActionResult> GetApiResult()
     {
-        return Ok(await _externalApiService.CallExternalAPI());
+        await _externalApiService.CallExternalAPIOnLoop();
+        return Ok();
     }
 }
 
